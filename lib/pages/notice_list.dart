@@ -8,6 +8,7 @@ class NoticeList extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -15,7 +16,7 @@ class NoticeList extends StatelessWidget {
             Image(
               image: AssetImage('assets/images/Logo.png'),
               height: 36,
-              width: 49,
+              width: 59,
             ),
             Text(
               'NOTICES',

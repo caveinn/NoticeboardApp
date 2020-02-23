@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:noticeboard_app/pages/notice_list.dart';
+import 'package:noticeboard_app/pages/splash_page.dart';
 
 void main() => runApp(MyApp());
 
@@ -28,6 +29,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return NoticeList();
+    return SplashScreen();
   }
 }
