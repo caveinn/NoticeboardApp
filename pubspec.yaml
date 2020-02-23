@@ -23,6 +23,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
+  firebase_auth: ^0.15.4
 
 dev_dependencies:
   flutter_test:
@@ -60,6 +61,11 @@ flutter:
     - family: Orbitron
       fonts:
         - asset: assets/fonts/Orbitron-Regular.ttf
+    - family: Lato
+      fonts:
+        - asset: assets/fonts/Lato-Regular.ttf
+        - asset: assets/fonts/Lato-LightItalic.ttf
+          style: italic
 
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:noticeboard_app/pages/notice_list.dart';
+
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({Key key}) : super(key: key);
@@ -14,7 +14,9 @@ class SplashScreen extends StatelessWidget {
           child: Container(
             height: MediaQuery.of(context).size.width * 0.3,
             width: MediaQuery.of(context).size.width * 0.3,
-            decoration: BoxDecoration(color: Color(0xAAAF3F2FA)),
+            decoration: BoxDecoration(
+              color: Color(0xAAAB8B3F2),
+            ),
           ),
         ),
         ClipPath(
@@ -22,7 +24,9 @@ class SplashScreen extends StatelessWidget {
           child: Container(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(color: Color(0xAAAF3F2FA)),
+            decoration: BoxDecoration(
+              color: Color(0xAAAB8B3F2),
+            ),
           ),
         ),
         Positioned(
@@ -30,10 +34,13 @@ class SplashScreen extends StatelessWidget {
           top: MediaQuery.of(context).size.height * 0.15,
           child: Container(
             child: Column(children: [
-              Image(
-                image: AssetImage('assets/images/Logo.png'),
-                height: MediaQuery.of(context).size.height * 0.16,
-                width: MediaQuery.of(context).size.width * 0.65,
+              Hero(
+                tag: 'MMU logo',
+                child: Image(
+                  image: AssetImage('assets/images/Logo.png'),
+                  height: MediaQuery.of(context).size.height * 0.16,
+                  width: MediaQuery.of(context).size.width * 0.65,
+                ),
               ),
               Text('NOTICE BOARD',
                   style: TextStyle(
@@ -67,7 +74,9 @@ class SplashScreen extends StatelessWidget {
                           fontSize: 18,
                           color: Colors.white),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/login');
+                    },
                   ),
                 ),
                 SizedBox(height: 20),
@@ -89,7 +98,9 @@ class SplashScreen extends StatelessWidget {
                           fontSize: 18,
                           color: Color(0xAAA243782)),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/notices_list');
+                    },
                   ),
                 ),
               ],
