@@ -10,6 +10,30 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginState extends State<LoginPage> {
+
+   void _showDialog(String err) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Error"),
+          content: new Text(err),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -164,8 +188,13 @@ class _LoginState extends State<LoginPage> {
                             color: Colors.white),
                       ),
                       onPressed: () async {
-                        print(passwordController.text);
-                        await  signIn(emailController.text, passwordController.text);
+                        try {
+
+                          print(await  signIn(emailController.text, passwordController.text));
+                        } on Exception catch (_) {
+
+                          _showDialog('Wromng Email or Password');
+                        }
                         Navigator.pushNamed(context, '/notices_list');
                       },
                     ),
