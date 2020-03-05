@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatefulWidget {
-
   LoginPage({Key key}) : super(key: key);
 
   @override
@@ -10,8 +9,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginState extends State<LoginPage> {
-
-   void _showDialog(String err) {
+  void _showDialog(String err) {
     // flutter defined function
     showDialog(
       context: context,
@@ -62,6 +60,8 @@ class _LoginState extends State<LoginPage> {
     return _firebaseAuth.signOut();
   }
 
+  final _loginFormKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,13 +92,14 @@ class _LoginState extends State<LoginPage> {
           Positioned(
             top: MediaQuery.of(context).size.height * 0.54,
             left: MediaQuery.of(context).size.width * 0.13,
-            child: Container(
+            child: Form(
+              key: _loginFormKey,
               child: Column(
                 children: <Widget>[
                   Container(
                       width: MediaQuery.of(context).size.width * 0.75,
-                      height: 41,
-                      child: TextField(
+                      height: 57,
+                      child: TextFormField(
                         style: TextStyle(
                           fontFamily: 'Lato',
                           fontSize: 18,
@@ -112,6 +113,7 @@ class _LoginState extends State<LoginPage> {
                           fillColor: Colors.white,
                           filled: true,
                           hintText: 'Email',
+                          helperText: '',
                           hintStyle: TextStyle(
                             fontFamily: 'Lato',
                             fontSize: 18,
@@ -123,6 +125,18 @@ class _LoginState extends State<LoginPage> {
                               color: Color(0xAAA7287DC),
                             ),
                           ),
+                          errorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              width: 3,
+                              color: Colors.red,
+                            ),
+                          ),
+                          focusedErrorBorder:OutlineInputBorder(
+                            borderSide: BorderSide(
+                              width: 3,
+                              color: Colors.red,
+                            ),
+                          ),
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                               width: 3,
@@ -130,12 +144,19 @@ class _LoginState extends State<LoginPage> {
                             ),
                           ),
                         ),
+                        validator: (value){
+                          if(value.isEmpty){
+                            return 'Please enter your email';
+                          }
+
+                          return null;
+                        },
                       )),
-                  SizedBox(height: 28),
+                    SizedBox(height: 10,),
                   Container(
                       width: MediaQuery.of(context).size.width * 0.75,
                       height: 41,
-                      child: TextField(
+                      child: TextFormField(
                         style: TextStyle(
                           fontFamily: 'Lato',
                           fontSize: 18,
@@ -188,14 +209,21 @@ class _LoginState extends State<LoginPage> {
                             color: Colors.white),
                       ),
                       onPressed: () async {
-                        try {
-
-                          print(await  signIn(emailController.text, passwordController.text));
-                        } on Exception catch (_) {
-
-                          _showDialog('Wromng Email or Password');
-                        }
-                        Navigator.pushNamed(context, '/notices_list');
+                       if( _loginFormKey.currentState.validate()){
+                         try{
+                        await signIn(
+                            emailController.text, passwordController.text);
+                            Navigator.pushNamed(context, '/notices_list');
+                         }
+                         on Exception catch (exception){
+                           showDialog(
+                             context:context,
+                             builder:(_) => AlertDialog(
+                             title: Text('Error'),
+                             content: Text('You have entered the wrong email or password'),
+                           ));
+                         }
+                       }
                       },
                     ),
                   ),
