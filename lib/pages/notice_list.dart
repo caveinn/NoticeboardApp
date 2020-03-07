@@ -1,23 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:noticeboard_app/services/auth.dart';
 
 class NoticeList extends StatelessWidget {
-  const NoticeList({Key key}) : super(key: key);
+  final String userId;
+  const NoticeList({Key key, this.userId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     GlobalKey<ScaffoldState> mykey = GlobalKey<ScaffoldState>();
     return Scaffold(
-      key: mykey,
+        key: mykey,
         endDrawer: SafeArea(
-                  child: Drawer(
+          child: Drawer(
             child: Column(
               children: <Widget>[
-                DrawerHeader(child: Text('Trial'),),
-                Container(height:54, child: Text('New'),),
-                Container(height:54, child: Text('Profile'),),
-                Container(height:54, child: Text('Users List'),),
-                Container(height:54, child: Text('Add User'),),
-                Container(height:54, child: Text('About'),),
+                DrawerHeader(
+                  child: Text('Trial'),
+                ),
+                InkWell(
+                  child: Container(
+                    height: 54,
+                    child: Text('New'),
+                  ),
+                  onTap: (){
+                    Navigator.pushNamed(context, '/edit');
+                  },
+                ),
+                Container(
+                  height: 54,
+                  child: Text('Profile'),
+                ),
+                Container(
+                  height: 54,
+                  child: Text('Users List'),
+                ),
+                Container(
+                  height: 54,
+                  child: Text('Add User'),
+                ),
+                Container(
+                  height: 54,
+                  child: Text('About'),
+                ),
+                Container(
+                  height: 54,
+                  child: InkWell(
+                    child: Text('Logout'),
+                    onTap: (){
+                      Authentication().signOut();
+                      Navigator.pushNamed(context, '/');
+                    },
+                    ),
+                ),
               ],
             ),
           ),
@@ -26,9 +60,7 @@ class NoticeList extends StatelessWidget {
           elevation: 0,
           automaticallyImplyLeading: false,
           backgroundColor: Colors.blue,
-          actions: <Widget>[
-            SizedBox.shrink()
-          ],
+          actions: <Widget>[SizedBox.shrink()],
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[

@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'notice_list.dart';
 
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({Key key}) : super(key: key);
 
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+
+    final userId = Provider.of<String>(context);
+    print(userId);
+    return userId != null ? NoticeList(): Scaffold(
         body: SafeArea(
       child: Stack(children: [
         ClipPath(

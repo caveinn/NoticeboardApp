@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:noticeboard_app/services/auth.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
@@ -35,32 +36,10 @@ class _LoginState extends State<LoginPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-
-  Future<String> signIn(String email, String password) async {
-    AuthResult result = await _firebaseAuth.signInWithEmailAndPassword(
-        email: email, password: password);
-    FirebaseUser user = result.user;
-    return user.uid;
-  }
-
-  Future<String> signUp(String email, String password) async {
-    AuthResult result = await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email, password: password);
-    FirebaseUser user = result.user;
-    return user.uid;
-  }
-
-  Future<FirebaseUser> getCurrentUser() async {
-    FirebaseUser user = await _firebaseAuth.currentUser();
-    return user;
-  }
-
-  Future<void> signOut() async {
-    return _firebaseAuth.signOut();
-  }
 
   final _loginFormKey = GlobalKey<FormState>();
+
+  final _auth = Authentication();
 
   @override
   Widget build(BuildContext context) {
@@ -211,7 +190,7 @@ class _LoginState extends State<LoginPage> {
                       onPressed: () async {
                        if( _loginFormKey.currentState.validate()){
                          try{
-                        await signIn(
+                        await _auth.signIn(
                             emailController.text, passwordController.text);
                             Navigator.pushNamed(context, '/notices_list');
                          }
