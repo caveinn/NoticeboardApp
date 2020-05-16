@@ -18,6 +18,7 @@ final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   }
 
   Stream<String> get getCurrentUser {
+    print('******I was called********');
     return _firebaseAuth.onAuthStateChanged.map((FirebaseUser user) => user != null ? user.uid : null );
 
   }

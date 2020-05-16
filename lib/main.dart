@@ -15,8 +15,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<String>.value(
-      value: Authentication().getCurrentUser,
+    return StreamProvider<String>(
+      create:(_) => Authentication().getCurrentUser,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
           '/': (context) => SplashScreen(),
           '/notices_list': (context) => NoticeList(),
           '/login': (context) => LoginPage(),
-          '/edit': (context) => EditorPage(),
+          '/edit': (context) => EditorPage()
         },
         theme: ThemeData(
           primarySwatch: Colors.indigo,

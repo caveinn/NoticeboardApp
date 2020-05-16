@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:noticeboard_app/methods/file_handling_methods.dart';
 import 'package:noticeboard_app/services/auth.dart';
+import 'package:provider/provider.dart';
 
 class NoticeList extends StatelessWidget {
-  final String userId;
-  const NoticeList({Key key, this.userId}) : super(key: key);
+  const NoticeList({
+    Key key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    print('prividing ${"\n"*5}');
+    print(Provider.of<String>(context));
+    final String userId = Provider.of<String>(context);
     GlobalKey<ScaffoldState> mykey = GlobalKey<ScaffoldState>();
     return Scaffold(
         key: mykey,
@@ -17,40 +23,76 @@ class NoticeList extends StatelessWidget {
                 DrawerHeader(
                   child: Text('Trial'),
                 ),
+                userId == null
+                    ? SizedBox.shrink()
+                    : InkWell(
+                        child: Container(
+                          height: 54,
+                          width: double.infinity,
+                          child: Center(
+                            child: Text('New'),
+                          ),
+                        ),
+                        onTap: ()  async {
+                          String pdfPath = await Pdf().getPdf();
+                          Navigator.pop(context);
+                          Navigator.pushNamed(context, '/edit', arguments: {'pdfPath': pdfPath});
+                        },
+                      ),
+                userId == null
+                    ? SizedBox.shrink()
+                    : Container(
+                        height: 54,
+                        width: double.infinity,
+                        child: Center(
+                          child: Text('New'),
+                        ),
+                      ),
+                userId == null
+                    ? SizedBox.shrink()
+                    : Container(
+                        height: 54,
+                        width: double.infinity,
+                        child: Center(
+                          child: Text('New'),
+                        ),
+                      ),
+                userId == null
+                    ? SizedBox.shrink()
+                    : Container(
+                        height: 54,
+                        width: double.infinity,
+                        child: Center(
+                          child: Text('New'),
+                        ),
+                      ),
+                userId == null
+                    ? SizedBox.shrink()
+                    : Container(
+                        height: 54,
+                        width: double.infinity,
+                        child: Center(
+                          child: Text('New'),
+                        ),
+                      ),
                 InkWell(
                   child: Container(
                     height: 54,
-                    child: Text('New'),
-                  ),
-                  onTap: (){
-                    Navigator.pushNamed(context, '/edit');
-                  },
-                ),
-                Container(
-                  height: 54,
-                  child: Text('Profile'),
-                ),
-                Container(
-                  height: 54,
-                  child: Text('Users List'),
-                ),
-                Container(
-                  height: 54,
-                  child: Text('Add User'),
-                ),
-                Container(
-                  height: 54,
-                  child: Text('About'),
-                ),
-                Container(
-                  height: 54,
-                  child: InkWell(
-                    child: Text('Logout'),
-                    onTap: (){
-                      Authentication().signOut();
-                      Navigator.pushNamed(context, '/');
-                    },
+                    width: double.infinity,
+                    child: Center(
+                      child: Text(userId == null ? 'login' : 'logout'),
                     ),
+                  ),
+                  onTap: () {
+                    if (userId == null) {
+                      Navigator.pop(context);
+                      Navigator.pushNamed(context, '/login');
+                    } else {
+                      Authentication().signOut();
+                      Navigator.pop(context);
+                      Navigator.pushNamed(context, '/');
+                    }
+                  },
                 ),
               ],
             ),

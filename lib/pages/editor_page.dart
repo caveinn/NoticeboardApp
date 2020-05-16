@@ -1,88 +1,48 @@
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
-import 'package:noticeboard_app/methods/zefyr_methods.dart';
-import 'package:noticeboard_app/services/database.dart';
-import 'package:provider/provider.dart';
-import 'package:quill_delta/quill_delta.dart';
-import 'package:zefyr/zefyr.dart';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter_full_pdf_viewer/full_pdf_viewer_scaffold.dart';
 
 class EditorPage extends StatefulWidget {
+  const EditorPage({
+    Key key,
+  }) : super(key: key);
+
   @override
-  EditorPageState createState() => EditorPageState();
+  _EditorPageState createState() => _EditorPageState();
 }
 
-class EditorPageState extends State<EditorPage> {
-  /// Allows to control the editor and the document.
-  ZefyrController _controller;
-
-  /// Zefyr editor like any other input field requires a focus node.
-  FocusNode _focusNode;
-
-  @override
-  void initState() {
-    super.initState();
-    // Here we must load the document and pass it to Zefyr controller.
-    final document = _loadDocument();
-    _controller = ZefyrController(document);
-    _focusNode = FocusNode();
-  }
-
-  void _saveDocument(BuildContext context, String uid) async {
-    // Notus documents can be easily serialized to JSON by passing to
-    // `jsonEncode` directly
-
-    final contents = jsonEncode(_controller.document);
-
- //pretty print s
-
-    var object = json.decode(contents);
-    var prettyString = JsonEncoder.withIndent('  ').convert(object);
-
-    print(prettyString);
-    // And show a snack bar on success.
-    await DatabaseService().addNoticeData(contents, uid);
-
-    Scaffold.of(context).showSnackBar(SnackBar(content: Text("Saved.")));
-
-  }
-
+class _EditorPageState extends State<EditorPage> {
   @override
   Widget build(BuildContext context) {
-    // Note that the editor requires special `ZefyrScaffold` widget to be
-    // one of its parents.
-    String _uid = Provider.of<String>(context, listen: false);
+    final Map arguments = ModalRoute.of(context).settings.arguments as Map;
+    final pdfPath = arguments['pdfPath'];
+    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
     return Scaffold(
-      appBar: AppBar(title: Text("Editor page"),
-      actions: <Widget>[
-          Builder(
-            builder: (context) => IconButton(
+      key: _scaffoldKey,
+
+      body: PDFViewerScaffold(
+        appBar: AppBar(
+          title: Text("Document"),
+          actions: <Widget>[
+            IconButton(
               icon: Icon(Icons.save),
-              onPressed: () => _saveDocument(context, _uid),
+              onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context){
+                      return AlertDialog   (
+                        title: Text('Alert'),
+                        content: Text('Sample'),
+                      );
+                    }
+                    );
+              },
             ),
-          )
-        ],
-      ),
-
-      body: ZefyrScaffold(
-        child: ZefyrEditor(
-          padding: EdgeInsets.all(16),
-          controller: _controller,
-          focusNode: _focusNode,
-          imageDelegate: MyAppZefyrImageDelegate(),
+          ],
         ),
-      ),
+          path: pdfPath),
     );
-  }
-
-  /// Loads the document to be edited in Zefyr.
-  NotusDocument _loadDocument() {
-    // For simplicity we hardcode a simple document with one line of text
-    // saying "Zefyr Quick Start".
-    // (Note that delta must always end with newline.)
-    final Delta delta = Delta()..insert("Zefyr Quick Start\n");
-    return NotusDocument.fromDelta(delta);
   }
 }
