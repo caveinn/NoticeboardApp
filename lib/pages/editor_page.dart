@@ -42,7 +42,8 @@ class _EditorPageState extends State<EditorPage> {
             ),
           ],
         ),
-          path: pdfPath),
+          path:'/data/user/0/com.caveinn.noticeboard/app_flutter/sample2.pdf'),
+          // pdfPath
     );
   }
 }

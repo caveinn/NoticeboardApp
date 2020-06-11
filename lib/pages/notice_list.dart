@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:noticeboard_app/methods/file_handling_methods.dart';
+import 'package:noticeboard_app/models/user.dart';
 import 'package:noticeboard_app/services/auth.dart';
 import 'package:provider/provider.dart';
+
+import '../notifiers.dart';
 
 class NoticeList extends StatelessWidget {
   const NoticeList({
@@ -10,9 +13,7 @@ class NoticeList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('prividing ${"\n"*5}');
-    print(Provider.of<String>(context));
-    final String userId = Provider.of<String>(context);
+    final User user = Provider.of<User>(context);
     GlobalKey<ScaffoldState> mykey = GlobalKey<ScaffoldState>();
     return Scaffold(
         key: mykey,
@@ -23,7 +24,7 @@ class NoticeList extends StatelessWidget {
                 DrawerHeader(
                   child: Text('Trial'),
                 ),
-                userId == null
+                user == null
                     ? SizedBox.shrink()
                     : InkWell(
                         child: Container(
@@ -33,13 +34,62 @@ class NoticeList extends StatelessWidget {
                             child: Text('New'),
                           ),
                         ),
-                        onTap: ()  async {
+                        onTap: () async {
+                          await showDialog(
+                              builder: (context) {
+                                return AlertDialog(
+                                  content: Container(
+                                    height: MediaQuery.of(context).size.width * 0.5,
+                                    child: Column(
+                                      children: <Widget>[
+                                        TextField(
+                                          style: TextStyle(
+                                            fontFamily: 'Lato',
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold
+                                          ),
+                                          decoration: InputDecoration(
+                                            contentPadding: EdgeInsets.only(
+                                              bottom: 15,
+                                              left: 10,
+                                            ),
+                                            fillColor: Colors.white,
+                                            filled: true,
+                                            hintText: 'Notice Title',
+                                            hintStyle: TextStyle(
+                                              fontFamily: 'Lato',
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                width: 3,
+                                                color: Color(0xAAA7287DC),
+                                              ),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                width: 3,
+                                                color: Color(0xAAA243782),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                              context: context);
                           String pdfPath = await Pdf().getPdf();
                           Navigator.pop(context);
-                          Navigator.pushNamed(context, '/edit', arguments: {'pdfPath': pdfPath});
+                          Provider.of<NotificationModel>(context, listen: false)
+                              .addFile(pdfPath, user);
+                          Navigator.pushNamed(context, '/edit',
+                              arguments: {'pdfPath': pdfPath});
                         },
                       ),
-                userId == null
+                user == null
                     ? SizedBox.shrink()
                     : Container(
                         height: 54,
@@ -48,7 +98,7 @@ class NoticeList extends StatelessWidget {
                           child: Text('New'),
                         ),
                       ),
-                userId == null
+                user == null
                     ? SizedBox.shrink()
                     : Container(
                         height: 54,
@@ -57,7 +107,7 @@ class NoticeList extends StatelessWidget {
                           child: Text('New'),
                         ),
                       ),
-                userId == null
+                user == null
                     ? SizedBox.shrink()
                     : Container(
                         height: 54,
@@ -66,7 +116,7 @@ class NoticeList extends StatelessWidget {
                           child: Text('New'),
                         ),
                       ),
-                userId == null
+                user.id == null
                     ? SizedBox.shrink()
                     : Container(
                         height: 54,
@@ -80,11 +130,11 @@ class NoticeList extends StatelessWidget {
                     height: 54,
                     width: double.infinity,
                     child: Center(
-                      child: Text(userId == null ? 'login' : 'logout'),
+                      child: Text(user.id == null ? 'login' : 'logout'),
                     ),
                   ),
                   onTap: () {
-                    if (userId == null) {
+                    if (user == null) {
                       Navigator.pop(context);
                       Navigator.pushNamed(context, '/login');
                     } else {

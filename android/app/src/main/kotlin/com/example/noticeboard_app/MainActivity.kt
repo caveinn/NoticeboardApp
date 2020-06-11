@@ -1,4 +1,4 @@
-package com.example.noticeboard_app
+package com.caveinn.noticeboard
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

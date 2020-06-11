@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:noticeboard_app/models/user.dart';
 import 'package:provider/provider.dart';
 
 import 'notice_list.dart';
@@ -11,7 +12,7 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final userId = Provider.of<String>(context);
+    final userId = Provider.of<User>(context);
     return userId != null ? NoticeList(): Scaffold(
         body: SafeArea(
       child: Stack(children: [

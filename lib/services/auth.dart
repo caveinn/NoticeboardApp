@@ -1,4 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:noticeboard_app/models/user.dart';
+
+import 'database.dart';
 
 class Authentication{
 final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -17,10 +20,16 @@ final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
     return user != null ? user.uid : null;
   }
 
-  Stream<String> get getCurrentUser {
+  Future<User> get getCurrentUser async {
     print('******I was called********');
-    return _firebaseAuth.onAuthStateChanged.map((FirebaseUser user) => user != null ? user.uid : null );
-
+    String userId;
+    // _firebaseAuth.onAuthStateChanged.map((FirebaseUser user) => user != null ? user.uid : null ).listen((event) =>
+    //   print(event)
+    // ) ;
+    FirebaseUser fireuser = await  _firebaseAuth.currentUser();
+    userId = fireuser.uid;
+    User user = await DatabaseService().getUser(userId);
+    return user;
   }
 
   Future<void> signOut() async {
