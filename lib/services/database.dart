@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:noticeboard_app/models/notice.dart';
 import 'package:noticeboard_app/models/user.dart';
 
 class DatabaseService {
@@ -45,6 +46,12 @@ class DatabaseService {
     return await noticeCollection.document().setData(
       {'url': url, 'userId': userId, 'title': title, "time":DateTime.now()}
     );
+  }
+
+  Future<List<Notice>> get notices {
+    noticeCollection.snapshots().listen((event) {
+      print(event);
+    });
   }
 
 }

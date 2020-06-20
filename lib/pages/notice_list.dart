@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:noticeboard_app/methods/file_handling_methods.dart';
 import 'package:noticeboard_app/models/user.dart';
@@ -14,6 +15,8 @@ class NoticeList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final User user = Provider.of<User>(context);
+    final notification = Provider.of<NotificationModel>(context, listen: false);
+    TextEditingController titleController = TextEditingController();
     GlobalKey<ScaffoldState> mykey = GlobalKey<ScaffoldState>();
     return Scaffold(
         key: mykey,
@@ -38,16 +41,24 @@ class NoticeList extends StatelessWidget {
                           await showDialog(
                               builder: (context) {
                                 return AlertDialog(
+                                  backgroundColor: Colors.red,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(10))
+                                  ),
                                   content: Container(
-                                    height: MediaQuery.of(context).size.width * 0.5,
+                                    height: 80,
+                                    decoration: BoxDecoration(
+                                      color: Colors.red,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(50))),
                                     child: Column(
                                       children: <Widget>[
                                         TextField(
+                                          controller: titleController,
                                           style: TextStyle(
-                                            fontFamily: 'Lato',
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold
-                                          ),
+                                              fontFamily: 'Lato',
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold),
                                           decoration: InputDecoration(
                                             contentPadding: EdgeInsets.only(
                                               bottom: 15,
@@ -75,6 +86,20 @@ class NoticeList extends StatelessWidget {
                                             ),
                                           ),
                                         ),
+                                        SizedBox(height: 10),
+                                        Align(
+                                          alignment: Alignment.bottomCenter,
+                                          child: InkWell(
+                                            child: Container(
+                                              color:Colors.yellow,
+                                              child: Text('continue')
+                                            ),
+                                            onTap: (){
+                                              notification.setTitle(titleController.text);
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                          ),
                                       ],
                                     ),
                                   ),
@@ -83,10 +108,11 @@ class NoticeList extends StatelessWidget {
                               context: context);
                           String pdfPath = await Pdf().getPdf();
                           Navigator.pop(context);
-                          Provider.of<NotificationModel>(context, listen: false)
-                              .addFile(pdfPath, user);
+                          if(pdfPath != null){
+                          notification.addFile(pdfPath, user);
                           Navigator.pushNamed(context, '/edit',
                               arguments: {'pdfPath': pdfPath});
+                          }
                         },
                       ),
                 user == null
@@ -186,9 +212,25 @@ class NoticeList extends StatelessWidget {
         ),
         body: Container(
           color: Color(0xAAAB8B3F2),
-          child: Center(
-            child: Text('Trial'),
-          ),
+          child: StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection('notices').snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError)
+          return new Text('Error: ${snapshot.error}');
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting: return new Text('Loading...');
+          default:
+            return new ListView(
+              children: snapshot.data.documents.map((DocumentSnapshot document) {
+                return new ListTile(
+                  title: new Text(document['title']),
+                  subtitle: new Text(document['time'].toDate().toString()),
+                );
+              }).toList(),
+            );
+        }
+      },
+    )
         ));
   }
 }

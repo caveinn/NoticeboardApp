@@ -29,15 +29,7 @@ class _EditorPageState extends State<EditorPage> {
             IconButton(
               icon: Icon(Icons.save),
               onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context){
-                      return AlertDialog   (
-                        title: Text('Alert'),
-                        content: Text('Sample'),
-                      );
-                    }
-                    );
+                  
               },
             ),
           ],

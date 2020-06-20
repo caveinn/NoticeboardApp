@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureProvider<User>(
       create:(_) => Authentication().getCurrentUser,
-      child: ChangeNotifierProvider(
+      child: ChangeNotifierProvider<NotificationModel>(
               create:  (_) => NotificationModel() ,
               child: MaterialApp(
           debugShowCheckedModeBanner: false,

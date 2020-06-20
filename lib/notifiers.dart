@@ -12,7 +12,7 @@ import 'services/database.dart';
 class NotificationModel extends ChangeNotifier{
   String _notificationTitle = '';
   String _notificationFile = '';
-  String _notificationCloudPath = null;
+  String _notificationCloudPath = '';
 
 
   void setTitle(String title){
@@ -20,8 +20,14 @@ class NotificationModel extends ChangeNotifier{
     notifyListeners();
   }
 
-  void getFiles(){
+  void setFile(String title){
+    _notificationFile = title;
+    notifyListeners();
+  }
 
+  void setCloudPath(String title){
+    _notificationCloudPath = title;
+    notifyListeners();
   }
 
   void addFile(String path, User user) async {
@@ -33,10 +39,7 @@ class NotificationModel extends ChangeNotifier{
 
     var response = await http.post('https://api.cloudinary.com/v1_1/${DotEnv().env['cloud_name']}/raw/upload',body: { "file": "data:raw;base64,$pdf", "upload_preset": DotEnv().env['upload_preset'],} );
     var uploadedUrl = json.decode(response.body)['url'];
-    print('\n\n\n\n\n');
     var getPdf = await http.get(uploadedUrl);
-    //comment out the next three lines to prevent the image from being saved
-    //to the device to show that it's coming from the internet
     final directory = await getApplicationDocumentsDirectory();
     final path2 = directory.path;
     File file2 = new File(path2+'/sample2.pdf');
@@ -51,6 +54,14 @@ class NotificationModel extends ChangeNotifier{
 
   String get notificationTitle {
     return _notificationTitle;
+  }
+
+  String get notificationFile {
+    return _notificationFile;
+  }
+
+  String get notificationPath{
+    return _notificationCloudPath;
   }
 
 }
