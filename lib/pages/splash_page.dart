@@ -12,8 +12,8 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final userId = Provider.of<User>(context);
-    return userId != null ? NoticeList(): Scaffold(
+    final user = Provider.of<User>(context);
+    return user != null ? NoticeList(): Scaffold(
         body: SafeArea(
       child: Stack(children: [
         ClipPath(

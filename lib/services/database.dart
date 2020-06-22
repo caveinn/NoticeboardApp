@@ -50,7 +50,7 @@ class DatabaseService {
 
   Future<List<Notice>> get notices {
     noticeCollection.snapshots().listen((event) {
-      print(event);
+      
     });
   }
 

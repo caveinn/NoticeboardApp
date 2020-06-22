@@ -142,7 +142,7 @@ class NoticeList extends StatelessWidget {
                           child: Text('New'),
                         ),
                       ),
-                user.id == null
+                user == null
                     ? SizedBox.shrink()
                     : Container(
                         height: 54,
@@ -156,7 +156,7 @@ class NoticeList extends StatelessWidget {
                     height: 54,
                     width: double.infinity,
                     child: Center(
-                      child: Text(user.id == null ? 'login' : 'logout'),
+                      child: Text(user == null ? 'login' : 'logout'),
                     ),
                   ),
                   onTap: () {

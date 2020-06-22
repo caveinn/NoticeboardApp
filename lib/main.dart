@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return FutureProvider<User>(
+    return StreamProvider<User>(
       create:(_) => Authentication().getCurrentUser,
       child: ChangeNotifierProvider<NotificationModel>(
               create:  (_) => NotificationModel() ,
