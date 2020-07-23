@@ -64,7 +64,7 @@ class _LoginState extends State<LoginPage> {
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
-                  color: Color(0xAAAB8B3F2),
+                  color: Color(0xFFAB8B3F2),
                 )),
           ),
           Positioned(
@@ -100,7 +100,7 @@ class _LoginState extends State<LoginPage> {
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                               width: 3,
-                              color: Color(0xAAA7287DC),
+                              color: Color(0xFFA7287DC),
                             ),
                           ),
                           errorBorder: OutlineInputBorder(
@@ -109,7 +109,7 @@ class _LoginState extends State<LoginPage> {
                               color: Colors.red,
                             ),
                           ),
-                          focusedErrorBorder:OutlineInputBorder(
+                          focusedErrorBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                               width: 3,
                               color: Colors.red,
@@ -118,19 +118,21 @@ class _LoginState extends State<LoginPage> {
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                               width: 3,
-                              color: Color(0xAAA243782),
+                              color: Color(0xFFA243782),
                             ),
                           ),
                         ),
-                        validator: (value){
-                          if(value.isEmpty){
+                        validator: (value) {
+                          if (value.isEmpty) {
                             return 'Please enter your email';
                           }
 
                           return null;
                         },
                       )),
-                    SizedBox(height: 10,),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Container(
                       width: MediaQuery.of(context).size.width * 0.75,
                       height: 41,
@@ -157,13 +159,13 @@ class _LoginState extends State<LoginPage> {
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                               width: 3,
-                              color: Color(0xAAA7287DC),
+                              color: Color(0xFFA7287DC),
                             ),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
                               width: 3,
-                              color: Color(0xAAA243782),
+                              color: Color(0xFFA243782),
                             ),
                           ),
                         ),
@@ -178,7 +180,7 @@ class _LoginState extends State<LoginPage> {
                     width: MediaQuery.of(context).size.width * 0.41,
                     height: 41,
                     child: RaisedButton(
-                      color: Color(0xAAA243782),
+                      color: Color(0xFFA243782),
                       child: Text(
                         'Login',
                         style: TextStyle(
@@ -187,21 +189,24 @@ class _LoginState extends State<LoginPage> {
                             color: Colors.white),
                       ),
                       onPressed: () async {
-                       if( _loginFormKey.currentState.validate()){
-                         try{
-                        await _auth.signIn(
-                            emailController.text, passwordController.text);
+                        if (_loginFormKey.currentState.validate()) {
+                          try {
+                            var fireReuturn = await _auth.signIn(
+                                emailController.text, passwordController.text);
                             Navigator.pushNamed(context, '/notices_list');
-                         }
-                         on Exception catch (exception){
-                           showDialog(
-                             context:context,
-                             builder:(_) => AlertDialog(
-                             title: Text('Error'),
-                             content: Text('You have entered the wrong email or password'),
-                           ));
-                         }
-                       }
+
+                            print(fireReuturn);
+                            print('Fire return \n\n\n\n\n');
+                          } on Exception catch (exception) {
+                            showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                      title: Text('Error'),
+                                      content: Text(
+                                          'You have entered the wrong email or password'),
+                                    ));
+                          }
+                        }
                       },
                     ),
                   ),

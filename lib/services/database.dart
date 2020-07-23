@@ -19,7 +19,7 @@ class DatabaseService {
   // }
 
   Future<User> getUser(String userId)  async {
-    User user;
+    User user = User(id: userId);
     await userCollection.where(
     "id",
     isEqualTo: userId
@@ -50,7 +50,7 @@ class DatabaseService {
 
   Future<List<Notice>> get notices {
     noticeCollection.snapshots().listen((event) {
-      
+
     });
   }
 

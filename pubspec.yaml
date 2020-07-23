@@ -31,6 +31,7 @@ dependencies:
   flutter_full_pdf_viewer: ^1.0.6
   path_provider: ^1.6.7
   file_picker: ^1.7.1
+  intl: any
 
 dev_dependencies:
   flutter_test:

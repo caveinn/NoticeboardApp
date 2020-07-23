@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:noticeboard_app/pages/editor_page.dart';
+import 'package:noticeboard_app/pages/view_page.dart';
 import 'package:noticeboard_app/pages/login_page.dart';
 import 'package:noticeboard_app/pages/notice_list.dart';
 import 'package:noticeboard_app/pages/splash_page.dart';
@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
             '/': (context) => SplashScreen(),
             '/notices_list': (context) => NoticeList(),
             '/login': (context) => LoginPage(),
-            '/edit': (context) => EditorPage()
+            '/edit': (context) => ViewPage(),
           },
           theme: ThemeData(
             primarySwatch: Colors.indigo,

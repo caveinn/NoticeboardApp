@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:noticeboard_app/methods/file_handling_methods.dart';
 import 'package:noticeboard_app/models/user.dart';
 import 'package:noticeboard_app/services/auth.dart';
 import 'package:provider/provider.dart';
+
 
 import '../notifiers.dart';
 
@@ -15,6 +17,7 @@ class NoticeList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final User user = Provider.of<User>(context);
+
     final notification = Provider.of<NotificationModel>(context, listen: false);
     TextEditingController titleController = TextEditingController();
     GlobalKey<ScaffoldState> mykey = GlobalKey<ScaffoldState>();
@@ -43,12 +46,12 @@ class NoticeList extends StatelessWidget {
                                 return AlertDialog(
                                   backgroundColor: Colors.red,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(10))
-                                  ),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10))),
                                   content: Container(
                                     height: 80,
                                     decoration: BoxDecoration(
-                                      color: Colors.red,
+                                        color: Colors.red,
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(50))),
                                     child: Column(
@@ -75,13 +78,13 @@ class NoticeList extends StatelessWidget {
                                             enabledBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
                                                 width: 3,
-                                                color: Color(0xAAA7287DC),
+                                                color: Color(0xFFA7287DC),
                                               ),
                                             ),
                                             focusedBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
                                                 width: 3,
-                                                color: Color(0xAAA243782),
+                                                color: Color(0xFFA243782),
                                               ),
                                             ),
                                           ),
@@ -91,15 +94,15 @@ class NoticeList extends StatelessWidget {
                                           alignment: Alignment.bottomCenter,
                                           child: InkWell(
                                             child: Container(
-                                              color:Colors.yellow,
-                                              child: Text('continue')
-                                            ),
-                                            onTap: (){
-                                              notification.setTitle(titleController.text);
+                                                color: Colors.yellow,
+                                                child: Text('continue')),
+                                            onTap: () {
+                                              notification.setTitle(
+                                                  titleController.text);
                                               Navigator.of(context).pop();
                                             },
                                           ),
-                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -107,11 +110,10 @@ class NoticeList extends StatelessWidget {
                               },
                               context: context);
                           String pdfPath = await Pdf().getPdf();
-                          Navigator.pop(context);
-                          if(pdfPath != null){
-                          notification.addFile(pdfPath, user);
-                          Navigator.pushNamed(context, '/edit',
-                              arguments: {'pdfPath': pdfPath});
+                          if (pdfPath != null) {
+                            notification.setFile(pdfPath);
+                            Navigator.pushNamed(context, '/edit',
+                                arguments: {'edit': true});
                           }
                         },
                       ),
@@ -177,7 +179,7 @@ class NoticeList extends StatelessWidget {
         appBar: AppBar(
           elevation: 0,
           automaticallyImplyLeading: false,
-          backgroundColor: Colors.blue,
+          backgroundColor: Color(0xFFB8B3F2),
           actions: <Widget>[SizedBox.shrink()],
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -193,14 +195,14 @@ class NoticeList extends StatelessWidget {
               Text(
                 'NOTICES',
                 style: TextStyle(
-                    color: Color(0xAA243782),
+                    color: Color(0xFF243782),
                     fontSize: 24,
                     fontFamily: 'Orbitron'),
               ),
               InkWell(
                 child: Icon(
                   Icons.menu,
-                  color: Color(0xAA243782),
+                  color: Color(0xFF243782),
                   size: 33,
                 ),
                 onTap: () {
@@ -211,26 +213,96 @@ class NoticeList extends StatelessWidget {
           ),
         ),
         body: Container(
-          color: Color(0xAAAB8B3F2),
-          child: StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('notices').snapshots(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (snapshot.hasError)
-          return new Text('Error: ${snapshot.error}');
-        switch (snapshot.connectionState) {
-          case ConnectionState.waiting: return new Text('Loading...');
-          default:
-            return new ListView(
-              children: snapshot.data.documents.map((DocumentSnapshot document) {
-                return new ListTile(
-                  title: new Text(document['title']),
-                  subtitle: new Text(document['time'].toDate().toString()),
-                );
-              }).toList(),
-            );
-        }
-      },
-    )
-        ));
+            color: Color(0xFFFFFF),
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  top: 19, left: 22, right: 22, bottom: 19),
+              child: StreamBuilder<QuerySnapshot>(
+                stream: Firestore.instance.collection('notices').snapshots(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasError)
+                    return new Text('Error: ${snapshot.error}');
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.waiting:
+                      return new Text('Loading...');
+                    default:
+                      return new ListView(
+                        children: snapshot.data.documents
+                            .map((DocumentSnapshot document) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom:19 ),
+                            child: InkWell(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                                  color: Color(0x27B8B3F2),
+
+                                ),
+                                child: new ListTile(
+                                  title: new Text(document['title']),
+                                  subtitle: new Text(
+                                      convertTime(document['time'].toDate()),
+                                ),
+                              )),
+                              onTap: () {
+                                showDialog(
+                                    context: context,
+                                    child: AlertDialog(
+                                      content: Text('Opening...'),
+                                    ));
+                                notification.setAll(
+                                    notificationCloudPath: document['url'],
+                                    notificationFile: '',
+                                    notificationTitle: document['title']);
+                                notification.saveFileFromCloud().then((value) {
+                                  Navigator.of(context).pop();
+                                  Navigator.pushNamed(context, '/edit',
+                                      arguments: {'edit': false});
+                                });
+                              },
+                            ),
+                          );
+                        }).toList(),
+                      );
+                  }
+                },
+              ),
+            )));
+  }
+  String convertTime(DateTime date){
+    var now = DateTime.now();
+    var format = DateFormat('HH:mm a');
+    var diff = now.difference(date);
+    var time = '';
+
+    print(diff.inSeconds);
+    print(diff.inDays);
+    print('\n\n\n\n');
+
+    if(diff.inDays >= 7){
+      time = (diff.inDays / 7).floor().toString() + ' Weeks ago';
+      return time;
+    }
+    else if(diff.inDays >= 1){
+       time = (diff.inDays).toString() + ' Days ago';
+       return time;
+    }
+    else if(diff.inHours >= 1 ){
+      time = (diff.inHours).toString() + ' Hours ago';
+      return time;
+    }
+
+    else if(diff.inMinutes >= 1){
+      time = (diff.inMinutes).toString() + ' Minutes ago';
+      return time;
+    }
+    else if(diff.inSeconds >= 1){
+      time = (diff.inSeconds).toString() + ' Seconds ago';
+      return time;
+    }
+    else{
+      return 'just now';
+    }
   }
 }

@@ -23,18 +23,26 @@ final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   Stream<User> get getCurrentUser  async* {
 
-    User user = null;
+    var userId =  await _firebaseAuth.currentUser();
+    User user = await DatabaseService().getUser(userId.uid);
+
 
 
     final users = _firebaseAuth.onAuthStateChanged;
+
+
     await for ( final fuser in users  ){
+       print('getting curent user');
+      print(fuser);
+      print('\n\n\n\n\n\n');
       if(fuser != null){
         user = await DatabaseService().getUser(fuser.uid);
-        print('yielding user');
+        print('yielding user \n\n\n\n\n\n\n\n');
         print(user);
         yield user;
 
       }else{
+
       yield null;
       }
     }
